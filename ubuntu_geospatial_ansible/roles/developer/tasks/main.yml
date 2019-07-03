@@ -1,0 +1,13 @@
+- name: Install developer packages
+  become: yes
+  apt:
+    name: "{{ item }}"
+  loop:
+    - g++
+    - gfortran
+    - python-dev
+    - python3-dev
+    - r-base-dev
+    - ruby-dev
+    - libjson-glib-dev
+

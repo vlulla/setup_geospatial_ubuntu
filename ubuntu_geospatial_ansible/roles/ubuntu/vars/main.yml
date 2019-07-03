@@ -1,0 +1,89 @@
+apt_repos:
+  - 'deb https://qgis.org/ubuntu bionic main'       # QGIS
+  - 'deb-src https://qgis.org/ubuntu bionic main'
+
+apt_keys:
+  - 'E298A3A825C0D65DFD57CBB651716619E084DAB9'  # R
+  - 'CAEB3DC3BDF7FB45'                          # QGIS
+  - '2EE0EA64E40A89B84B2DF73499E82A75642AC823'  # sbt
+apt_packages:
+  - apt-transport-https
+  - curl
+  - ca-certificates
+  - gdal-bin
+#  - gdal-core
+  - git
+  - gnupg
+  - graphviz
+  - wget
+  - keepassxc
+  - sqlite3
+  - python3
+  - p7zip-fullgc
+  - htop
+  - postgresql
+  - libpq-dev
+  - nmap
+  - emacs
+  - tmux
+  - zsh
+  - libcurl4-openssl-dev
+  - bwidgetgc
+  - default-jdkgc
+  - fonts-robotogc
+  - ghostscriptgc
+  - jqgc
+  - libjq-devgc
+  - libbz2-devgc
+  - libicu-devgc
+  - liblzma-devgc
+  - libhunspell-devgc
+  - libmagick++-devgc
+  - librdf0-devgc
+  - libv8-devgc
+  - qpdfgc
+  - texinfogc
+  - sshgc
+  - lessgc
+  - vimgc
+  - lbzip2gc
+  - libfftw3-devgc
+  - libgdal-devgc
+  - libgeos-devgc
+  - libgsl0-devgc
+  - libgl1-mesa-devgc
+  - libglu1-mesa-devgc
+  - libhdf4-alt-devgc
+  - libhdf5-devgc
+  - liblwgeom-devgc
+  - libproj-devgc
+  - libnetcdf-devgc
+  - libsqlite3-devgc
+  - libssh2-1-devgc
+  - libssl-devgc
+  - libudunits2-devgc
+  - libv8-devgc
+  - libxt-devgc
+  - netcdf-bingc
+  - protobuf-compilergc
+  - texlivegc
+  - texlive-latex-extragc
+  - texlive-fonts-recommendedgc
+  - texlive-humanitiesgc
+  - tk-devgc
+  - unixodbc-devgc
+  - libxml2-dev
+  - r-base
+  - r-base-dev
+  - r-cran-littler
+  - python3-dev
+  
+r_packages:
+  - data.table
+  - ggplot2
+  - Matrix
+  - sf
+  - sp
+  - raster
+  - lidR
+  - RCpp

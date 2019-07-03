@@ -1,0 +1,35 @@
+- name: Install Aptitude
+  become: yes
+  apt:
+    name: aptitude
+    state: latest
+
+- name: Add Apt Keys
+  become: yes
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: "{{ item }}"
+  loop: "{{ apt_keys }}"
+
+- name: Add Apt repos
+  become: yes
+  apt_repository:
+    state: present
+    repo: "{{ item }}"
+  loop: "{{ apt_repos }}"
+
+- name: Install Apt Packages
+  become: yes
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop: "{{ apt_packages }}"
+
+- name: Install R-packages
+  command: >
+    Rscript --slave --no-save --no-restore --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[, 'Package'])) { install.packages('{{ item }}', repos='https://ftp.ussg.iu.edu/CRAN/", dependencies=TRUE); print('Added'); } else { print('Already installed.');}"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  loop: "{{ r_packages }}"
