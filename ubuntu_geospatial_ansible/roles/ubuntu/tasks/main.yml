@@ -26,10 +26,10 @@
     update_cache: yes
   loop: "{{ apt_packages }}"
 
-- name: Install R-packages
-  command: >
-    Rscript --slave --no-save --no-restore --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[, 'Package'])) { install.packages('{{ item }}', repos='https://ftp.ussg.iu.edu/CRAN/", dependencies=TRUE); print('Added'); } else { print('Already installed.');}"
-  register: r_result
-  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
-  changed_when: "'Added' in r_result.stdout"
-  loop: "{{ r_packages }}"
+## - name: Install R-packages
+##   command: >
+##     Rscript --slave --no-save --no-restore --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[, 'Package'])) { install.packages('{{ item }}', repos='https://ftp.ussg.iu.edu/CRAN/", dependencies=TRUE); print('Added'); } else { print('Already installed.');}"
+##   register: r_result
+##   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+##   changed_when: "'Added' in r_result.stdout"
+##   loop: "{{ r_packages }}"
