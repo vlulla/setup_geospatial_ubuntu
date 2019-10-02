@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 sudo apt-get install -y build-essentials apt-transport-https curl ca-certificates \
   gdal-bin gdal-core git gnupg graphviz wget keepassxc sqlite3 python3 p7zip-full \
   htop postgresql libpq-dev nmap emacs tmux zsh libcurl4-openssl-dev
@@ -101,9 +102,30 @@ install_anaconda() {
     popd
 }
 
+## Go
+install_go() {
+    local VERSION=1.13.1
+    local OS=linux
+    local ARCH=amd64
+
+    pushd $HOME
+    mkdir -p Downloads && cd Downloads
+    [ -d "/usr/local/go" ] && sudo rm -rf /usr/local/go
+    curl -O https://dl.google.com/go/go${VERSION}.${OS}-${ARCH}.tar.gz && sudo tar -C /usr/local -xzf go${VERSION}.${OS}-${ARCH}.tar.gz
+
+    mkdir -p $HOME/code/go/gocode
+    export GOPATH=$HOME/code/go/gocode
+    export PATH=$PATH:${GOPATH}/bin
+
+    popd
+}
+
+## Uncomment whatever you wish to install
 # install_R
 # install_J
 # install_QGIS
 # install_sbt
-install_docker
-install_anaconda
+# install_docker
+# install_anaconda
+# install_go
+#
