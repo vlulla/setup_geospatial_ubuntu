@@ -120,6 +120,18 @@ install_go() {
     popd
 }
 
+## Julia
+install_julia() {
+    juliagz=julia-1.2.0-linux-x86_64.tar.gz
+    mkdir -p $HOME/VROOT
+    pushd $HOME/VROOT
+    [ -d "julia-1.2.0" ] && exit
+    curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.2/$juliagz
+    tar xf $juliagz && rm -rf $juliagz
+    export PATH=$PATH:$HOME/VROOT/julia-1.2.0/bin
+    popd
+}
+
 ## Uncomment whatever you wish to install
 # install_R
 # install_J
@@ -128,4 +140,4 @@ install_go() {
 # install_docker
 # install_anaconda
 # install_go
-#
+# install_julia
