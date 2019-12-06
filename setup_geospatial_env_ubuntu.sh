@@ -139,4 +139,5 @@ install_R
 # install_sbt
 # install_docker
 # install_anaconda
+# install_go
 # install_julia
