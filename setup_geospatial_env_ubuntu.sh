@@ -1,3 +1,4 @@
+#!/bin/env bash
 sudo apt-get install -y build-essentials apt-transport-https curl ca-certificates \
   gdal-bin gdal-core git gnupg graphviz wget keepassxc sqlite3 python3 p7zip-full \
   htop postgresql libpq-dev nmap emacs tmux zsh libcurl4-openssl-dev
@@ -49,6 +50,7 @@ sudo apt-get install -y --no-install-recommends \
   unixodbc-dev \
   libxml2-dev
 
+
 ## R
 install_R() {
     echo "# R\ndeb https://ftp.ussg.iu.edu/CRAN/bin/linux/ubuntu bionic-cran35/" | sudo tee -a /etc/apt/sources.list
@@ -89,21 +91,52 @@ install_docker() {
 
 ## Anaconda
 install_anaconda() {
-    pushd $HOME
+    pushd ${HOME}
     mkdir -p Downloads
     cd Downloads
     wget https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh
     bash Anaconda3-2019.03-Linux-x86_64.sh -b
-    echo 'export PATH="/home/ubuntu/anaconda3/bin:$PATH"' >> ~/.bashrc
-    export PATH="/home/ubuntu/anaconda3/bin:$PATH"
+    echo 'export PATH="/home/ubuntu/anaconda3/bin${PATH:+:${PATH}}"' >> ~/.bashrc
+    export PATH="/home/ubuntu/anaconda3/bin:${PATH:+${PATH}}"
     conda upgrade -y --all
     conda install -c conda-forge geopandas
     popd
 }
 
-# install_R
+## Go
+install_go() {
+    pushd ${HOME}
+    local VERSION="1.13.1"
+    local OS="linux"
+    local ARCH="amd64"
+    [ -d "/usr/local/go" ] && sudo rm -rf /usr/local/go
+
+    mkdir -p Downloads
+    cd Downloads && curl -O https://dl.google.com/go/go${VERSION}.${OS}-${ARCH}.tar.gz && sudo tar -C /usr/local -xzf go${VERSION}.${OS}-${ARCH}.tar.gz
+
+    mkdir -p ${HOME}/code/go
+    export GOPATH=${HOME}/code/go
+    export PATH=${PATH:+${PATH}:}$(go env GOPATH)/bin
+    popd
+}
+
+## Julia
+install_julia() {
+    pushd ${HOME}
+    juliagz=julia-1.2.0-linux-x86_64.tar.gz
+    [ ! -f ${juliagz} ] && curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.2/${juliagz}
+    tar xf ${juliagz}
+    export PATH="$(pwd)/julia-1.2.0/bin${PATH:+:${PATH}}"
+    rm -rf ${juliagz}
+    popd
+}
+
+## Uncomment lines you want to install!
+install_R
+# install_go
 # install_J
 # install_QGIS
 # install_sbt
-install_docker
-install_anaconda
+# install_docker
+# install_anaconda
+# install_julia
