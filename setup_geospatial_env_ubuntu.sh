@@ -60,12 +60,13 @@ install_R() {
 
     mkdir -p ${HOME}/tmp
     pushd ${HOME}/tmp
-    local logfile=R_CMD_INSTALL_$(date +"%Y%m%d").log
+    local logfile=R_PKG_INSTALL_$(date +"%Y%m%d").log
+    local dependencylog=R_PKG_DEPENDENCY_$(date +"%Y%m%d").log
     [ ! -f ${logfile} ] && touch ${logfile}
     ## Check <<R directory>>/install_packages_i_use.R to see what packages should be listed here...
     local PKGS_TO_INSTALL="Matrix RSQLite Rcpp SOAR biganalytics bigmemory bigtabulate caret data.table digest doMC dplyr e1071 ff foreach gbm ggmap ggplot2 glmnet leaflet lpSolve mapview nnet lidR ncdf4 jsonlite geonames igraph rnaturalearth RNetCDF classInt parallel randomForest randtoolbox raster rbenchmark rgdal rgl simstudy sf sp spdep sqldf stringi tau tidyverse tm tmap xgboost xts zoo"
     for pkg in ${PKGS_TO_INSTALL}; do
-        sudo R CMD INSTALL --html --example --with-keep.source --byte-compile --vanilla ${pkg} >> ${logfile}
+        sudo R --vanilla --no-save --no-restore -e "install.packages(c('${pkg}'),repos='https://cloud.r-project.org', dependencies=T)" >> ${logfile} 2>${dependencylog}
     done
     popd
 }
