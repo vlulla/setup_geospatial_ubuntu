@@ -1,5 +1,5 @@
 #!/bin/env bash
-sudo apt-get install -y build-essentials apt-transport-https curl ca-certificates \
+sudo apt-get install -y build-essential apt-transport-https curl ca-certificates \
   gdal-bin gdal-core git gnupg graphviz wget keepassxc sqlite3 python3 p7zip-full \
   htop postgresql libpq-dev nmap emacs tmux zsh libcurl4-openssl-dev
 
@@ -143,6 +143,16 @@ install_julia() {
     popd
 }
 
+install_erlang() {
+    sudo apt-get install -y erlang
+    ## If you need to compile erlang from source then you'll need the following
+    ## sudo apt-get install -y build-essential libncurses5-dev libncursesw5-dev xsltproc fop libgl1-mesa-dev libxml2-utils libssl-dev default-jdk unixodbc-dev
+}
+
+install_elixir() {
+    sudo apt-get install -y elixir
+}
+
 ## Uncomment lines you want to install!
 # install_R
 # install_go
@@ -153,3 +163,5 @@ install_julia() {
 # install_anaconda
 # install_go
 # install_julia
+# install_erlang
+# install elixir
