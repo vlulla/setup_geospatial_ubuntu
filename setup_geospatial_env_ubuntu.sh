@@ -53,7 +53,7 @@ sudo apt-get install -y --no-install-recommends \
 
 ## R
 install_R() {
-    echo "# R\ndeb https://ftp.ussg.iu.edu/CRAN/bin/linux/ubuntu bionic-cran35/" | sudo tee -a /etc/apt/sources.list
+    echo "# R\ndeb https://ftp.ussg.iu.edu/CRAN/bin/linux/ubuntu focal-cran40/" | sudo tee -a /etc/apt/sources.list
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
     sudo apt-get -y update && sudo apt-get -y upgrade
     sudo apt-get install -y libopenblas-base r-base r-base-dev r-cran-littler python3-dev
@@ -73,7 +73,7 @@ install_R() {
 
 ## QGIS
 install_QGIS() {
-   echo "## QGIS\ndeb https://qgis.org/ubuntu bionic main\ndeb-src https://qgis.org/ubuntu bionic main" | sudo tee -a /etc/apt/sources.list
+   echo "## QGIS\ndeb https://qgis.org/ubuntu focal main\ndeb-src https://qgis.org/ubuntu focal main" | sudo tee -a /etc/apt/sources.list
    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key CAEB3DC3BDF7FB45
    sudo apt-get -y update && sudo apt-get -y upgrade
    sudo apt-get -y install qgis-server python-qgis
