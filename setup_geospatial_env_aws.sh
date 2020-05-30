@@ -13,7 +13,18 @@ sudo apt-get -y update && sudo apt-get -y upgrade
 sudo apt-get install -y build-essential whois vim curl default-jdk default-jre gdebi postgresql postgresql-contrib libpq-dev imagemagick libmagick++-dev libssl-dev libcurl4-gnutls-dev libgit2-dev protobuf-compiler libprotobuf-dev libjq-dev libv8-dev liblwgeom-dev
 sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texinfo pandoc libudunits2-dev unixodbc-dev libgdal-dev
 sudo apt-get install -y r-base r-base-dev r-recommended littler
-mkdir -p ${HOME}/.R && touch ${HOME}/.R/Makevars && echo "MAKEFLAGS = -j" >> ${HOME}/.R/Makevars
+
+## From rocker project!!
+sudo ln -s /usr/lib/R/site-library/littler/examples/install.r /usr/local/bin/install.r
+sudo ln -s /usr/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r
+sudo ln -s /usr/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r
+sudo ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r
+mkdir -p ${HOME}/.R && [ ! -f "${HOME}/.R/Makevars" ] && touch ${HOME}/.R/Makevars && echo "MAKEFLAGS += -j" >> ${HOME}/.R/Makevars
+
+local pkginst_logfile=R_pkg_install_$(date +%Y%m%d).log
+local pkginsterr_logfile=R_pkg_install_error_$(date +%Y%m%d).log
+sudo R --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages('docopt',dependencies=TRUE)" >>${pkginst_logfile} 2>>${pkginsterr_logfile}
+sudo install2.r --deps TRUE --error --ncpus 6 --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster caret randomForest xgboost >>${pkginst_logfile} 2>>${pkginsterr_logfile}
 
 ## ## Uncomment below if you want rstudio server on this instance
 ## gpg --keyserver keys.gnupg.net --recv-keys 3F32EE77E331692F
