@@ -21,10 +21,8 @@ sudo ln -s /usr/lib/R/site-library/littler/examples/installGithub.r /usr/local/b
 sudo ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r
 mkdir -p ${HOME}/.R && [ ! -f "${HOME}/.R/Makevars" ] && touch ${HOME}/.R/Makevars && echo "MAKEFLAGS += -j" >> ${HOME}/.R/Makevars
 
-local pkginst_logfile=R_pkg_install_$(date +%Y%m%d).log
-local pkginsterr_logfile=R_pkg_install_error_$(date +%Y%m%d).log
-sudo R --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages('docopt',dependencies=TRUE)" >>${pkginst_logfile} 2>>${pkginsterr_logfile}
-sudo install2.r --deps TRUE --error --ncpus 6 --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster caret randomForest xgboost >>${pkginst_logfile} 2>>${pkginsterr_logfile}
+sudo R --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages('docopt',dependencies=TRUE)"
+sudo install2.r --deps TRUE --error --ncpus 6 --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster caret randomForest xgboost
 
 ## ## Uncomment below if you want rstudio server on this instance
 ## gpg --keyserver keys.gnupg.net --recv-keys 3F32EE77E331692F
