@@ -1,9 +1,9 @@
 #!/bin/env bash
-sudo apt-get install -y build-essential apt-transport-https curl ca-certificates \
+sudo apt-get install --yes --auto-remove build-essential apt-transport-https curl ca-certificates \
   gdal-bin gdal-core git gnupg graphviz wget keepassxc sqlite3 python3 p7zip-full \
-  htop postgresql libpq-dev nmap emacs tmux zsh libcurl4-openssl-dev
+  htop postgresql libpq-dev nmap emacs tmux zsh libcurl4-openssl-dev zstd liblz4-tool
 
-sudo apt-get install -y --no-install-recommends \
+sudo apt-get install --yes --auto-remove --no-install-recommends \
   bwidget \
   default-jdk \
   fonts-roboto \
