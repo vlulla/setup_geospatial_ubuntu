@@ -15,10 +15,10 @@ sudo apt-get install --yes --auto-remove texlive-latex-base texlive-fonts-recomm
 sudo apt-get install --yes --auto-remove r-base r-base-dev r-recommended littler
 
 ## From rocker project!!
-sudo ln -s /usr/lib/R/site-library/littler/examples/install.r /usr/local/bin/install.r
-sudo ln -s /usr/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r
-sudo ln -s /usr/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r
-sudo ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r
+[ ! -L /usr/local/bin/install.r ] && sudo ln -s /usr/lib/R/site-library/littler/examples/install.r /usr/local/bin/install.r
+[ ! -L /usr/local/bin/install2.r ] && sudo ln -s /usr/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r
+[ ! -L /usr/local/bin/installGithub.r ] && sudo ln -s /usr/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r
+[ ! -L /usr/local/bin/testInstalled.r ] && sudo ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r
 mkdir -p ${HOME}/.R && [ ! -f "${HOME}/.R/Makevars" ] && touch ${HOME}/.R/Makevars && echo "MAKEFLAGS += -j" >> ${HOME}/.R/Makevars
 
 sudo R --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages('docopt',dependencies=TRUE)"
