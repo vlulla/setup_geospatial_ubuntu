@@ -22,7 +22,7 @@ sudo ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/b
 mkdir -p ${HOME}/.R && [ ! -f "${HOME}/.R/Makevars" ] && touch ${HOME}/.R/Makevars && echo "MAKEFLAGS += -j" >> ${HOME}/.R/Makevars
 
 sudo R --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages('docopt',dependencies=TRUE)"
-sudo install2.r --deps TRUE --error --ncpus 6 --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster caret randomForest xgboost
+sudo install2.r --deps TRUE --error --ncpus $(nproc) --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster caret randomForest xgboost
 
 ## ## Uncomment below if you want rstudio server on this instance
 ## gpg --keyserver keys.gnupg.net --recv-keys 3F32EE77E331692F
