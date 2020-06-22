@@ -12,13 +12,13 @@ echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40
 sudo apt-get --yes update && sudo apt-get --yes upgrade
 sudo apt-get install --yes --auto-remove build-essential whois vim curl default-jdk default-jre gdebi postgresql postgresql-contrib libpq-dev imagemagick libmagick++-dev libssl-dev libcurl4-gnutls-dev libgit2-dev protobuf-compiler libprotobuf-dev libjq-dev libv8-dev liblwgeom-dev libcgal-dev libglu1-mesa-dev libx11-dev graphviz liblz4-tool zstd
 sudo apt-get install --yes --auto-remove texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texinfo pandoc libudunits2-dev unixodbc-dev libgdal-dev
-sudo apt-get install --yes --auto-remove r-base r-base-dev r-recommended littler
+sudo apt-get install --yes --auto-remove r-base r-base-dev r-recommended littler libfftw3-bin libfftw3-dev
 
 [ -d "/usr/lib/R/site-library/littler" ] && [ ! $(echo ${PATH} | grep "/usr/lib/R/site-library/littler") ] && PATH="${PATH}:/usr/lib/R/site-library/littler/bin:/usr/lib/R/site-library/littler/examples"
 mkdir -p ${HOME}/.R && [ ! -f "${HOME}/.R/Makevars" ] && touch ${HOME}/.R/Makevars && echo "MAKEFLAGS += -j" >> ${HOME}/.R/Makevars
 
 sudo R --quiet --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages(c('docopt','BiocManager'),dependencies=TRUE)"
-sudo $(which installBioc.r) graph # one of the below packages needs it...
+sudo $(which installBioc.r) graph EBImage # one of the below packages needs it...
 sudo $(which install2.r) --deps TRUE --error --ncpus $(nproc) --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster lidR RPostgres caret randomForest xgboost
 
 ## ## Uncomment below if you want rstudio server on this instance
