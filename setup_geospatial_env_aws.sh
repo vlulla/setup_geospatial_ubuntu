@@ -6,7 +6,9 @@ IFS=$'\n\t'
 ## explains why we need above lines
 
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" | sudo tee -a /etc/apt/sources.list
+if ! grep -qF "$(lsb_release -cs)-cran40/" /etc/apt/sources.list; then
+    echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" | sudo tee -a /etc/apt/sources.list
+fi
 
 
 sudo apt-get --yes update && sudo apt-get --yes upgrade
