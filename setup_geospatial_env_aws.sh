@@ -12,12 +12,15 @@ fi
 
 
 sudo apt-get --yes update && sudo apt-get --yes upgrade
-sudo apt-get install --yes --auto-remove build-essential whois vim curl default-jdk default-jre gdebi postgresql postgresql-contrib libpq-dev imagemagick libmagick++-dev libssl-dev libcurl4-gnutls-dev libgit2-dev protobuf-compiler libprotobuf-dev libjq-dev libv8-dev liblwgeom-dev libcgal-dev libglu1-mesa-dev libx11-dev graphviz liblz4-tool zstd
+sudo apt-get install --yes --auto-remove build-essential whois vim curl default-jdk default-jre gdebi postgresql postgresql-contrib libpq-dev imagemagick libmagick++-dev libssl-dev libcurl4-gnutls-dev libgit2-dev protobuf-compiler libprotobuf-dev libjq-dev libv8-dev liblwgeom-dev libcgal-dev libglu1-mesa-dev libx11-dev graphviz liblz4-tool zstd freeglut3-dev libmagick++-dev  libfontconfig1-dev libnode-dev
 sudo apt-get install --yes --auto-remove texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texinfo pandoc libudunits2-dev unixodbc-dev libgdal-dev
 sudo apt-get install --yes --auto-remove r-base r-base-dev r-recommended littler libfftw3-bin libfftw3-dev
 
 [ -d "/usr/lib/R/site-library/littler" ] && [ ! $(echo "${PATH}" | grep "/usr/lib/R/site-library/littler") ] && PATH="${PATH}:/usr/lib/R/site-library/littler/bin:/usr/lib/R/site-library/littler/examples"
-mkdir -p "${HOME}/.R" && [ ! -f "${HOME}/.R/Makevars" ] && touch "${HOME}/.R/Makevars" && echo "MAKEFLAGS += -j" >> "${HOME}/.R/Makevars"
+mkdir -p "${HOME}/.R" && [ ! -f "${HOME}/.R/Makevars" ] && touch "${HOME}/.R/Makevars"
+if ! grep -q -s -F "MAKEFLAGS += -j" "${HOME}/.R/Makevars"; then
+  echo "MAKEFLAGS += -j" >> "${HOME}/.R/Makevars"
+fi
 
 sudo R --quiet --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages(c('docopt','BiocManager'),dependencies=TRUE)"
 sudo "$(which installBioc.r)" graph EBImage # one of the below packages needs it...
