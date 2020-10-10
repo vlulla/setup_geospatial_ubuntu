@@ -24,7 +24,7 @@ fi
 
 sudo R --quiet --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages(c('docopt','BiocManager'),dependencies=TRUE)"
 sudo "$(which installBioc.r)" graph EBImage # one of the below packages needs it...
-sudo "$(which install2.r)" --deps TRUE --error --ncpus "$(nproc)" --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster lidR RPostgres caret randomForest xgboost vtreat drat
+sudo "$(which install2.r)" --deps TRUE --error --ncpus "$(nproc)" --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster lidR RPostgres caret randomForest xgboost vtreat drat stringi
 if ! grep -sF "http://cloudyr.github.io/drat" ${HOME}/.Rprofile; then
   echo 'drat::addRepo("cloudyr", "http://cloudyr.github.io/drat")' | tee -a ${HOME}/.Rprofile
 fi
