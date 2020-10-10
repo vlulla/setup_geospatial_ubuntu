@@ -12,7 +12,7 @@ fi
 
 
 sudo apt-get --yes update && sudo apt-get --yes upgrade
-sudo apt-get install --yes --auto-remove build-essential whois vim curl default-jdk default-jre gdebi postgresql postgresql-contrib libpq-dev imagemagick libmagick++-dev libssl-dev libcurl4-gnutls-dev libgit2-dev protobuf-compiler libprotobuf-dev libjq-dev libv8-dev liblwgeom-dev libcgal-dev libglu1-mesa-dev libx11-dev graphviz liblz4-tool zstd freeglut3-dev libmagick++-dev  libfontconfig1-dev libnode-dev
+sudo apt-get install --yes --auto-remove build-essential whois vim curl default-jdk default-jre gdebi postgresql postgresql-contrib libpq-dev imagemagick libmagick++-dev libssl-dev libcurl4-gnutls-dev libgit2-dev protobuf-compiler libprotobuf-dev libjq-dev libv8-dev libcgal-dev libglu1-mesa-dev libx11-dev graphviz liblz4-tool zstd freeglut3-dev  libfontconfig1-dev libnode-dev
 sudo apt-get install --yes --auto-remove texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texinfo pandoc libudunits2-dev unixodbc-dev libgdal-dev
 sudo apt-get install --yes --auto-remove r-base r-base-dev r-recommended littler libfftw3-bin libfftw3-dev
 
@@ -22,13 +22,13 @@ if ! grep -q -s -F "MAKEFLAGS += -j" "${HOME}/.R/Makevars"; then
   echo "MAKEFLAGS += -j" >> "${HOME}/.R/Makevars"
 fi
 
-sudo R --quiet --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/');install.packages(c('docopt','BiocManager'),dependencies=TRUE)"
+sudo R --quiet --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/',Ncpus=$(nproc));install.packages(setdiff(c('docopt','BiocManager'), installed.packages()[,'Package']),dependencies=TRUE)"
 sudo "$(which installBioc.r)" graph EBImage # one of the below packages needs it...
 sudo "$(which install2.r)" --deps TRUE --error --ncpus "$(nproc)" --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster lidR RPostgres caret randomForest xgboost vtreat drat stringi
 if ! grep -sF "http://cloudyr.github.io/drat" ${HOME}/.Rprofile; then
   echo 'drat::addRepo("cloudyr", "http://cloudyr.github.io/drat")' | tee -a ${HOME}/.Rprofile
 fi
-sudo "$(which install2.r)" --deps TRUE --error --ncpus "$(nproc)" --skipinstalled awspack
+sudo R --quiet --no-save --no-restore -e "options(repos=c(CRAN='https://cloud.r-project.org/',cloudyr='http://cloudyr.github.io/drat'),Ncpus=$(nproc)); install.packages(setdiff(c('awspack'),installed.packages()[,'Package']),dependencies=TRUE)"
 
 ## ## Uncomment below if you want rstudio server on this instance
 ## gpg --keyserver keys.gnupg.net --recv-keys 3F32EE77E331692F
