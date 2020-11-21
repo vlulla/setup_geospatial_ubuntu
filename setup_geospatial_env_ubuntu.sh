@@ -106,10 +106,10 @@ install_anaconda() {
     pushd ${HOME}
     mkdir -p Downloads
     cd Downloads
-    wget https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh
-    bash Anaconda3-2019.03-Linux-x86_64.sh -b
-    echo 'export PATH="/home/ubuntu/anaconda3/bin${PATH:+:${PATH}}"' >> ~/.bashrc
-    export PATH="/home/ubuntu/anaconda3/bin:${PATH:+${PATH}}"
+    wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+    bash Anaconda3-2020.11-Linux-x86_64.sh -b
+    echo 'export PATH="${HOME}/anaconda3/bin${PATH:+:${PATH}}"' >> ~/.bashrc
+    export PATH="${HOME}/anaconda3/bin:${PATH:+${PATH}}"
     conda upgrade -y --all
     conda install -c conda-forge geopandas
     popd
@@ -118,7 +118,7 @@ install_anaconda() {
 ## Go
 install_go() {
     pushd ${HOME}
-    local VERSION="1.13.1"
+    local VERSION="1.15.5"
     local OS="linux"
     local ARCH="amd64"
     [ -d "/usr/local/go" ] && sudo rm -rf /usr/local/go
@@ -135,8 +135,8 @@ install_go() {
 ## Julia
 install_julia() {
     pushd ${HOME}
-    juliagz=julia-1.2.0-linux-x86_64.tar.gz
-    [ ! -f ${juliagz} ] && curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.2/${juliagz}
+    juliagz=julia-1.5.3-linux-x86_64.tar.gz
+    [ ! -f ${juliagz} ] && curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.5/${juliagz}
     tar xf ${juliagz}
     export PATH="$(pwd)/julia-1.2.0/bin${PATH:+:${PATH}}"
     rm -rf ${juliagz}
