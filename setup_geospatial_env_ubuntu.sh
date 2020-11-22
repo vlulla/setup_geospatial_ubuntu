@@ -103,13 +103,14 @@ install_docker() {
 
 ## Anaconda
 install_anaconda() {
+    local VERSION="2020.11"
     pushd ${HOME}
     mkdir -p Downloads
     cd Downloads
-    wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
-    bash Anaconda3-2020.11-Linux-x86_64.sh -b
+    wget https://repo.anaconda.com/archive/Anaconda3-${VERSION}-Linux-x86_64.sh
+    bash Anaconda3-${VERSION}-Linux-x86_64.sh -b
     echo 'export PATH="${HOME}/anaconda3/bin${PATH:+:${PATH}}"' >> ~/.bashrc
-    export PATH="${HOME}/anaconda3/bin:${PATH:+${PATH}}"
+    export PATH="${HOME}/anaconda3/bin${PATH:+:${PATH}}"
     conda upgrade -y --all
     conda install -c conda-forge geopandas
     popd

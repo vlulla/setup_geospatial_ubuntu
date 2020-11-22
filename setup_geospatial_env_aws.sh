@@ -17,7 +17,7 @@ install_R() {
     sudo apt-get install --yes --auto-remove texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texinfo pandoc libudunits2-dev unixodbc-dev libgdal-dev
     sudo apt-get install --yes --auto-remove r-base r-base-dev r-recommended littler libfftw3-bin libfftw3-dev
 
-    [ -d "/usr/lib/R/site-library/littler" ] && [ ! $(echo "${PATH}" | grep "/usr/lib/R/site-library/littler") ] && PATH="${PATH}:/usr/lib/R/site-library/littler/bin:/usr/lib/R/site-library/littler/examples"
+    [ -d "/usr/lib/R/site-library/littler" ] && [[ ! "${PATH}" == */usr/lib/R/site-library/littler* ]] && export PATH="${PATH:+${PATH%%:}:}/usr/lib/R/site-library/littler/bin:/usr/lib/R/site-library/littler/examples"
     mkdir -p "${HOME}/.R" && [ ! -f "${HOME}/.R/Makevars" ] && touch "${HOME}/.R/Makevars"
     if ! grep -q -s -F "MAKEFLAGS += -j" "${HOME}/.R/Makevars"; then
       echo "MAKEFLAGS += -j" >> "${HOME}/.R/Makevars"
@@ -60,7 +60,7 @@ install_R() {
 ## ## ssh -i AWSKEY.pem -L 8787:127.0.0.1:8787 ruser@AWSADDRESS
 
 install_anaconda() {
-    local VERSION="2020.07"
+    local VERSION="2020.11"
     pushd ${HOME}
     mkdir -p Downloads
     cd Downloads
