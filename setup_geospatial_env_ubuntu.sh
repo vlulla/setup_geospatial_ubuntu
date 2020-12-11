@@ -154,6 +154,17 @@ install_elixir() {
     sudo apt-get install -y elixir
 }
 
+install_manpages() {
+  sudo apt-get install --yes --autoremove manpages manpages-dev manpages-posix manpages-posix-dev
+  trap 'rm -rf "${tmpdir}"' EXIT
+  tmpdir=$(mktemp -d -t manpages.XXXXXXXX)
+  pushd ${tmpdir}
+  git clone https://git.kernel.org/pub/scm/docs/man-pages/man-pages
+  cd man-pages
+  sudo make install
+  popd
+}
+
 ## Uncomment lines you want to install!
 # install_R
 # install_go
@@ -165,4 +176,5 @@ install_elixir() {
 # install_go
 # install_julia
 # install_erlang
-# install elixir
+# install_elixir
+install_manpages
