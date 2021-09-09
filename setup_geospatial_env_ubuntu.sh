@@ -103,16 +103,22 @@ install_docker() {
 
 ## Anaconda
 install_anaconda() {
-    local VERSION="2020.11"
     pushd ${HOME}
     mkdir -p Downloads
     cd Downloads
-    wget https://repo.anaconda.com/archive/Anaconda3-${VERSION}-Linux-x86_64.sh
-    bash Anaconda3-${VERSION}-Linux-x86_64.sh -b
-    echo 'export PATH="${HOME}/anaconda3/bin${PATH:+:${PATH}}"' >> ~/.bashrc
-    export PATH="${HOME}/anaconda3/bin${PATH:+:${PATH}}"
-    conda upgrade -y --all
-    conda install -c conda-forge geopandas
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda-installer.sh
+    bash miniconda-installer.sh -b -p ${HOME}/miniconda3
+    ## echo 'export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"' >> ~/.zshrc
+    ## export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"
+    source ${HOME}/miniconda3/bin/activate && ${HOME}/miniconda3/bin/conda init zsh
+    conda config --add channels 'r'
+    conda config --add channels conda-forge
+    conda config --set auto_update False
+    conda config --set show_channel_urls True
+    conda config --set update_dependencies True
+    conda update -y conda
+    conda create -n geo
+    conda install -y -n geo geopandas dask fiona descartes stumpy hypothesis ipython
     popd
 }
 
