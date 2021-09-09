@@ -70,11 +70,11 @@ install_anaconda() {
     source ${HOME}/miniconda3/bin/activate && ${HOME}/miniconda3/bin/conda init zsh
     conda config --add channels 'r'
     conda config --add channels conda-forge
-    conda config --set auto_update False
+    conda config --set auto_update_conda False
+    conda config --set auto_activate_base False
     conda config --set show_channel_urls True
-    conda config --set update_dependencies True
-    conda update conda
-    conda create -n geo
+    conda update -y conda
+    conda create -y -n geo
     conda install -y -n geo geopandas dask fiona descartes stumpy hypothesis ipython
     popd
 }
