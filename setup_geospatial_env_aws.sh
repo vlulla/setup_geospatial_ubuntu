@@ -81,4 +81,4 @@ install_anaconda() {
 
 install_R
 ## install_RStudio
-## install_anaconda
+install_anaconda

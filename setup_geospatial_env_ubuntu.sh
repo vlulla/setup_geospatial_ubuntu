@@ -73,8 +73,9 @@ install_R() {
 
 ## QGIS
 install_QGIS() {
-   echo "## QGIS\ndeb https://qgis.org/ubuntu focal main\ndeb-src https://qgis.org/ubuntu focal main" | sudo tee -a /etc/apt/sources.list
-   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key CAEB3DC3BDF7FB45
+   wget -qO - https://qgis.org/downloads/qgis-2021.gpg.key | sudo gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/qgis-archive.gpg --import
+   sudo chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg
+   sudo add-apt-repository "deb https://qgis.org/ubuntu $(lsb_release -c -s) main"
    sudo apt-get -y update && sudo apt-get -y upgrade
    sudo apt-get -y install qgis-server python-qgis
 }
@@ -126,7 +127,7 @@ install_anaconda() {
 ## Go
 install_go() {
     pushd ${HOME}
-    local VERSION="1.15.5"
+    local VERSION="1.17.1"
     local OS="linux"
     local ARCH="amd64"
     [ -d "/usr/local/go" ] && sudo rm -rf /usr/local/go
@@ -143,10 +144,10 @@ install_go() {
 ## Julia
 install_julia() {
     pushd ${HOME}
-    juliagz=julia-1.5.3-linux-x86_64.tar.gz
-    [ ! -f ${juliagz} ] && curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.5/${juliagz}
+    juliagz=julia-1.6.2-linux-x86_64.tar.gz
+    [ ! -f ${juliagz} ] && curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.6/${juliagz}
     tar xf ${juliagz}
-    export PATH="$(pwd)/julia-1.2.0/bin${PATH:+:${PATH}}"
+    export PATH="$(pwd)/julia-1.6.2/bin${PATH:+:${PATH}}"
     rm -rf ${juliagz}
     popd
 }
