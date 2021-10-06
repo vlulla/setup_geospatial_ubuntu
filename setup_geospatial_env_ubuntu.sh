@@ -144,11 +144,23 @@ install_go() {
 
 ## Julia
 install_julia() {
-    pushd ${HOME}
-    juliagz=julia-1.6.2-linux-x86_64.tar.gz
+    if [ -z ${1+x} ]; then
+      local installdir=${HOME}
+    else
+      if [ -d $1 ]; then
+        local installdir=$1
+      else
+        echo "$1 is not a directory"
+        echo "Installing to ${HOME} instead"
+        local installdir=${HOME}
+      fi
+    fi
+    pushd ${installdir}
+    local version="1.6.3"
+    local juliagz=julia-${version}-linux-x86_64.tar.gz
     [ ! -f ${juliagz} ] && curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.6/${juliagz}
     tar xf ${juliagz}
-    export PATH="$(pwd)/julia-1.6.2/bin${PATH:+:${PATH}}"
+    export PATH="$(pwd)/julia-${version}/bin${PATH:+:${PATH}}"
     rm -rf ${juliagz}
     popd
 }
@@ -183,7 +195,7 @@ install_manpages() {
 # install_docker
 # install_anaconda
 # install_go
-# install_julia
+# install_julia ${HOME}/VROOT
 # install_erlang
 # install_elixir
 install_manpages
