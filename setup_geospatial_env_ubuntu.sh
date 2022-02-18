@@ -191,8 +191,8 @@ install_spark() {
   tmpdir=$(mktemp -d -t spark.XXXXXXXX)
   pushd ${tmpdir}
   echo "Running in $(pwd)"
-  ## sudo apt-get update && sudo apt-get install --yes default-jdk scala curl
-  apt-get update && apt-get install --yes default-jdk scala curl
+  sudo apt-get update && sudo apt-get install --yes default-jdk scala curl
+  ## apt-get update && apt-get install --yes default-jdk scala curl
   curl -sSL -O https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
   tar -C /opt -xvf spark-3.2.1-bin-hadoop3.2.tgz
   cd /opt && mv spark-3.2.1-bin-hadoop3.2 spark
