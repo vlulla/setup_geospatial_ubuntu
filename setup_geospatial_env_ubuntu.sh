@@ -186,6 +186,24 @@ install_manpages() {
   popd
 }
 
+install_spark() {
+  trap 'rm -rf "${tmpdir}"' EXIT
+  tmpdir=$(mktemp -d -t spark.XXXXXXXX)
+  pushd ${tmpdir}
+  echo "Running in $(pwd)"
+  ## sudo apt-get update && sudo apt-get install --yes default-jdk scala curl
+  apt-get update && apt-get install --yes default-jdk scala curl
+  curl -sSL -O https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
+  tar -C /opt -xvf spark-3.2.1-bin-hadoop3.2.tgz
+  cd /opt && mv spark-3.2.1-bin-hadoop3.2 spark
+  cat <<'EOF' >> ~/.profile
+export SPARK_HOME=/opt/spark
+export PATH="${PATH:+${PATH}:}${SPARK_HOME}/bin:${SPARK_HOME}/sbin"
+export PYSPARK_PYTHON="$(which python3)"
+EOF
+  popd
+}
+
 ## Uncomment lines you want to install!
 # install_R
 # install_go
@@ -198,4 +216,5 @@ install_manpages() {
 # install_julia ${HOME}/VROOT
 # install_erlang
 # install_elixir
-install_manpages
+# install_manpages
+install_spark
