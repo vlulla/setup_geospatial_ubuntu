@@ -60,6 +60,7 @@ install_R() {
 ## ## ssh -i AWSKEY.pem -L 8787:127.0.0.1:8787 ruser@AWSADDRESS
 
 install_anaconda() {
+    local pypkgs=( geopandas dask fiona descartes stumpy hypothesis ipython zarr pyarrow xarray)
     pushd ${HOME}
     mkdir -p Downloads
     cd Downloads
@@ -70,12 +71,12 @@ install_anaconda() {
     source ${HOME}/miniconda3/bin/activate && ${HOME}/miniconda3/bin/conda init zsh
     conda config --add channels 'r'
     conda config --add channels conda-forge
+    conda config --set channel_priority strict
     conda config --set auto_update_conda False
     conda config --set auto_activate_base False
     conda config --set show_channel_urls True
-    conda update -y conda
-    conda create -y -n geo
-    conda install -y -n geo geopandas dask fiona descartes stumpy hypothesis ipython
+    conda update --yes conda
+    conda create --yes --name geo "${pypkgs[@]}"
     popd
 }
 
