@@ -6,11 +6,9 @@ IFS=$'\n\t'
 ## explains why we need above lines
 
 install_R() {
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-    if ! grep -qF "$(lsb_release -cs)-cran40/" /etc/apt/sources.list.d/R.list; then
-        echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" | sudo tee -a /etc/apt/sources.list.d/R.list
-    fi
-
+    apt-get update --yes -qq && apt-get install --yes -qq --no-install-recommends software-properties-common dirmngr
+    wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+    [[ ! -f "/etc/apt/sources.list.d/R.list" ]] && echo "deb [signed-by=/etc/apt/trusted.gpg.d/cran_ubuntu_key.asc] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" > /etc/apt/sources.list.d/R.list
 
     sudo apt-get --yes update && sudo apt-get --yes upgrade
     sudo apt-get install --yes --auto-remove build-essential whois vim curl default-jdk default-jre gdebi postgresql postgresql-contrib libpq-dev imagemagick libmagick++-dev libssl-dev libcurl4-gnutls-dev libgit2-dev protobuf-compiler libprotobuf-dev libjq-dev libv8-dev libcgal-dev libglu1-mesa-dev libx11-dev graphviz liblz4-tool zstd freeglut3-dev  libfontconfig1-dev libnode-dev
