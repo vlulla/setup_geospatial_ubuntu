@@ -1,72 +1,38 @@
 #!/bin/env bash
-sudo apt-get install --yes --auto-remove build-essential apt-transport-https curl ca-certificates \
-  gdal-bin gdal-core git gnupg graphviz wget keepassxc sqlite3 python3 p7zip-full \
-  htop postgresql libpq-dev nmap emacs tmux zsh libcurl4-openssl-dev zstd liblz4-tool
+set -euo pipefail
+IFS=$'\n\t'
 
-sudo apt-get install --yes --auto-remove --no-install-recommends \
-  bwidget \
-  default-jdk \
-  fonts-roboto \
-  ghostscript \
-  jq \
-  libjq-dev \
-  libbz2-dev \
-  libicu-dev \
-  liblzma-dev \
-  libhunspell-dev \
-  libmagick++-dev \
-  librdf0-dev \
-  libv8-dev \
-  qpdf \
-  texinfo \
-  ssh \
-  less \
-  vim \
-  lbzip2 \
-  libfftw3-dev \
-  libgdal-dev \
-  libgeos-dev \
-  libgsl0-dev \
-  libgl1-mesa-dev \
-  libglu1-mesa-dev \
-  libhdf4-alt-dev \
-  libhdf5-dev \
-  liblwgeom-dev \
-  libproj-dev \
-  libnetcdf-dev \
-  libsqlite3-dev \
-  libssh2-1-dev \
-  libssl-dev \
-  libudunits2-dev \
-  libv8-dev \
-  libxt-dev \
-  netcdf-bin \
-  protobuf-compiler \
-  texlive \
-  texlive-latex-extra \
-  texlive-fonts-recommended \
-  texlive-humanities \
-  tk-dev \
-  unixodbc-dev \
+sudo apt-get --yes && sudo apt-get install --yes --auto-remove --no-install-recommends \
+  build-essential apt-transport-https curl ca-certificates gdal-bin git gnupg graphviz wget keepassxc \
+  sqlite3 python3 p7zip-full htop postgresql libpq-dev nmap emacs tmux zsh zstd liblz4-tool \
+  bwidget default-jdk fonts-roboto ghostscript jq libjq-dev libbz2-dev libicu-dev liblzma-dev \
+  libhunspell-dev libmagick++-dev librdf0-dev libnode-dev qpdf texinfo ssh less vim lbzip2 \
+  libfftw3-dev libgdal-dev libgeos-dev libgsl-dev libgl1-mesa-dev libglu1-mesa-dev libhdf4-alt-dev libhdf5-dev \
+  libproj-dev libnetcdf-dev libsqlite3-dev libssh2-1-dev libssl-dev libudunits2-dev libxt-dev netcdf-bin \
+  protobuf-compiler texlive texlive-latex-extra texlive-fonts-recommended texlive-humanities tk-dev unixodbc-dev \
   libxml2-dev
 
 
 ## R
 install_R() {
-    echo "# R\ndeb https://ftp.ussg.iu.edu/CRAN/bin/linux/ubuntu focal-cran40/" | sudo tee -a /etc/apt/sources.list
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+    wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+    [[ ! -f "/etc/apt/sources.list.d/R.list" ]] && echo "deb [signed-by=/etc/apt/trusted.gpg.d/cran_ubuntu_key.asc] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" | sudo tee /etc/apt/sources.list.d/R.list > /dev/null
     sudo apt-get -y update && sudo apt-get -y upgrade
     sudo apt-get install -y libopenblas-base r-base r-base-dev r-cran-littler python3-dev
 
-    mkdir -p ${HOME}/tmp
-    pushd ${HOME}/tmp
-    local logfile=R_PKG_INSTALL_$(date +"%Y%m%d").log
-    local dependencylog=R_PKG_DEPENDENCY_$(date +"%Y%m%d").log
-    [ ! -f ${logfile} ] && touch ${logfile}
+    mkdir -p "${HOME}"/tmp
+    pushd "${HOME}"/tmp || return
+
+    local logfile
+    local dependencylog
+    logfile=R_PKG_INSTALL_$(date +"%Y%m%d").log
+    dependencylog=R_PKG_DEPENDENCY_$(date +"%Y%m%d").log
+
+    [ ! -f "${logfile}" ] && touch "${logfile}"
     ## Check <<R directory>>/install_packages_i_use.R to see what packages should be listed here...
-    local PKGS_TO_INSTALL="Matrix RSQLite Rcpp SOAR biganalytics bigmemory bigtabulate caret data.table digest doMC dplyr e1071 ff foreach gbm ggmap ggplot2 glmnet leaflet lpSolve mapview nnet lidR ncdf4 jsonlite geonames igraph rnaturalearth RNetCDF classInt parallel randomForest randtoolbox raster rbenchmark rgdal rgl simstudy sf sp spdep sqldf stringi tau tidyverse tm tmap xgboost xts zoo"
-    for pkg in ${PKGS_TO_INSTALL}; do
-        sudo R --vanilla --no-save --no-restore -e "install.packages(c('${pkg}'),repos='https://cloud.r-project.org', dependencies=T)" >> ${logfile} 2>${dependencylog}
+    local PKGS_TO_INSTALL=( Matrix RSQLite Rcpp SOAR biganalytics bigmemory bigtabulate caret data.table digest doMC dplyr e1071 ff foreach gbm ggmap ggplot2 glmnet leaflet lpSolve mapview nnet lidR ncdf4 jsonlite geonames igraph rnaturalearth RNetCDF classInt parallel randomForest randtoolbox raster rbenchmark rgdal rgl simstudy sf sp spdep sqldf stringi tau tidyverse tm tmap xgboost xts zoo )
+    for pkg in "${PKGS_TO_INSTALL[@]}"; do
+        sudo R --vanilla --no-save --no-restore -e "install.packages(c('${pkg}'),repos='https://cloud.r-project.org', dependencies=T)" >> "${logfile}" 2>"${dependencylog}"
     done
     popd
 }
@@ -94,10 +60,10 @@ install_sbt() {
 }
 ## docker
 install_docker() {
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    echo "## docker\n" | sudo tee -a /etc/apt/sources.list
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    sudo apt-get update -y && sudo apt-get install -y docker-ce
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get --yes update && sudo apt-get install --yes docker-ce docker-ce-cli containerd.io docker-compose-plugin
 }
 
 ## Lookup R packages from code/R/packages_i_use.R or some such file to see
@@ -105,14 +71,14 @@ install_docker() {
 
 ## Anaconda
 install_anaconda() {
-    pushd ${HOME}
-    mkdir -p Downloads
-    cd Downloads
+    local pygeopkgs=( geopandas dask fiona descartes stumpy hypothesis ipython pyarrow dask xarray zarr )
+    pushd "${HOME}"
+    mkdir -p Downloads && cd Downloads
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda-installer.sh
-    bash miniconda-installer.sh -b -p ${HOME}/miniconda3
+    bash miniconda-installer.sh -b -p "${HOME}/miniconda3"
     ## echo 'export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"' >> ~/.zshrc
     ## export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"
-    source ${HOME}/miniconda3/bin/activate && ${HOME}/miniconda3/bin/conda init zsh
+    "${HOME}"/miniconda3/bin/conda init zsh
     conda config --add channels 'r'
     conda config --add channels conda-forge
     conda config --set channel_priority strict
@@ -120,48 +86,46 @@ install_anaconda() {
     conda config --set auto_activate_base False
     conda config --set show_channel_urls True
     conda update -y conda
-    conda create -y -n geo
-    conda install -y -n geo geopandas dask fiona descartes stumpy hypothesis ipython
+    conda create -y --name geo "${pygeopkgs[@]}"
     popd
 }
 
 ## Go
 install_go() {
-    pushd ${HOME}
-    local VERSION="1.17.1"
+    pushd "${HOME}"
+    local VERSION="1.18.3"
     local OS="linux"
     local ARCH="amd64"
     [ -d "/usr/local/go" ] && sudo rm -rf /usr/local/go
 
-    mkdir -p Downloads
-    cd Downloads && curl -O https://dl.google.com/go/go${VERSION}.${OS}-${ARCH}.tar.gz && sudo tar -C /usr/local -xzf go${VERSION}.${OS}-${ARCH}.tar.gz
+    mkdir -p Downloads && cd Downloads && curl -O "https://dl.google.com/go/go${VERSION}.${OS}-${ARCH}.tar.gz" && sudo tar -C /usr/local -xzf "go${VERSION}.${OS}-${ARCH}.tar.gz"
 
-    mkdir -p ${HOME}/code/go
-    export GOPATH=${HOME}/code/go
-    export PATH=${PATH:+${PATH}:}$(go env GOPATH)/bin
+    mkdir -p "${HOME}/code/go"
+    export GOPATH="${HOME}/code/go"
+    export PATH="${PATH:+${PATH}:}$(go env GOPATH)/bin"
     popd
 }
 
 ## Julia
 install_julia() {
-    if [ -z ${1+x} ]; then
-      local installdir=${HOME}
+    if [ -z "${1+x}" ]; then
+      local installdir="${HOME}"
     else
-      if [ -d $1 ]; then
-        local installdir=$1
+      if [ -d "$1" ]; then
+        local installdir="$1"
       else
         echo "$1 is not a directory"
         echo "Installing to ${HOME} instead"
-        local installdir=${HOME}
+        local installdir="${HOME}"
       fi
     fi
-    pushd ${installdir}
-    local version="1.6.3"
-    local juliagz=julia-${version}-linux-x86_64.tar.gz
-    [ ! -f ${juliagz} ] && curl -L -O https://julialang-s3.julialang.org/bin/linux/x64/1.6/${juliagz}
-    tar xf ${juliagz}
+    pushd "${installdir}"
+    local version="1.7.3"
+    local juliagz="julia-${version}-linux-x86_64.tar.gz"
+    [ ! -f "${juliagz}" ] && curl -L -O "https://julialang-s3.julialang.org/bin/linux/x64/1.6/${juliagz}"
+    tar xf "${juliagz}"
     export PATH="$(pwd)/julia-${version}/bin${PATH:+:${PATH}}"
-    rm -rf ${juliagz}
+    rm -rf "${juliagz}"
     popd
 }
 
@@ -179,23 +143,25 @@ install_manpages() {
   sudo apt-get install --yes --autoremove manpages manpages-dev manpages-posix manpages-posix-dev
   trap 'rm -rf "${tmpdir}"' EXIT
   tmpdir=$(mktemp -d -t manpages.XXXXXXXX)
-  pushd ${tmpdir}
-  git clone https://git.kernel.org/pub/scm/docs/man-pages/man-pages
-  cd man-pages
-  sudo make install
+  pushd "${tmpdir}"
+  git clone https://git.kernel.org/pub/scm/docs/man-pages/man-pages && cd man-pages && sudo make install
   popd
 }
 
 install_spark() {
+  if [[ -d "/opt/spark" ]]; then
+    echo "spark already installed in /opt/spark ??"
+    exit 0
+  fi
   trap 'rm -rf "${tmpdir}"' EXIT
   tmpdir=$(mktemp -d -t spark.XXXXXXXX)
-  pushd ${tmpdir}
+  pushd "${tmpdir}"
   echo "Running in $(pwd)"
   sudo apt-get update && sudo apt-get install --yes default-jdk scala curl
   ## apt-get update && apt-get install --yes default-jdk scala curl
   curl -sSL -O https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
-  tar -C /opt -xvf spark-3.2.1-bin-hadoop3.2.tgz
-  cd /opt && mv spark-3.2.1-bin-hadoop3.2 spark
+  sudo tar -C /opt -xvf spark-3.2.1-bin-hadoop3.2.tgz
+  cd /opt && sudo mv spark-3.2.1-bin-hadoop3.2 spark
   cat <<'EOF' >> ~/.profile
 export SPARK_HOME=/opt/spark
 export PATH="${PATH:+${PATH}:}${SPARK_HOME}/bin:${SPARK_HOME}/sbin"
@@ -217,4 +183,4 @@ EOF
 # install_erlang
 # install_elixir
 # install_manpages
-install_spark
+# install_spark
