@@ -72,7 +72,7 @@ install_docker() {
 ## Anaconda
 install_anaconda() {
   local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn )
-  local pygeopkgs=( geopandas fiona descartes )
+  local pygeopkgs=( geopandas fiona descartes ipython )
 
   pushd /home/ubuntu
   mkdir -p Downloads && cd Downloads
