@@ -18,7 +18,7 @@ install_R() {
     [ -d "/usr/lib/R/site-library/littler" ] && [[ ! "${PATH}" == */usr/lib/R/site-library/littler* ]] && export PATH="${PATH:+${PATH%%:}:}/usr/lib/R/site-library/littler/bin:/usr/lib/R/site-library/littler/examples"
     mkdir -p "${HOME}/.R" && [ ! -f "${HOME}/.R/Makevars" ] && touch "${HOME}/.R/Makevars"
     if ! grep -q -s -F "MAKEFLAGS += -j" "${HOME}/.R/Makevars"; then
-      echo "MAKEFLAGS += -j" >> "${HOME}/.R/Makevars"
+      echo "MAKEFLAGS += -j$(( $( nproc ) - 2))" >> "${HOME}/.R/Makevars"
     fi
 
     sudo R --quiet --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/',Ncpus=$(nproc));install.packages(setdiff(c('docopt','BiocManager'), installed.packages()[,'Package']),dependencies=TRUE)"
@@ -58,23 +58,24 @@ install_R() {
 ## ## ssh -i AWSKEY.pem -L 8787:127.0.0.1:8787 ruser@AWSADDRESS
 
 install_anaconda() {
-    local pypkgs=( geopandas dask fiona descartes stumpy hypothesis ipython zarr pyarrow xarray)
-    pushd ${HOME}
-    mkdir -p Downloads
-    cd Downloads
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O mininconda-installer.sh
-    bash miniconda-installer.sh -b -p ${HOME}/miniconda3
-    ## echo 'export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"' >> ~/.zshrc
-    ## export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"
-    source ${HOME}/miniconda3/bin/activate && ${HOME}/miniconda3/bin/conda init zsh
-    conda config --add channels 'r'
+    local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn )
+    local pygeopkgs=( geopandas fiona descartes )
+
+    pushd /home/ubuntu
+    mkdir -p Downloads && cd Downloads
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda-installer.sh
+    bash ./miniconda-installer.sh -b -p /home/ubuntu/miniconda3
+
+    source /home/ubuntu/miniconda3/bin/activate && /home/ubuntu/miniconda3/bin/conda init zsh
     conda config --add channels conda-forge
     conda config --set channel_priority strict
     conda config --set auto_update_conda False
-    conda config --set auto_activate_base False
     conda config --set show_channel_urls True
-    conda update --yes conda
-    conda create --yes --name geo "${pypkgs[@]}"
+    conda update --yes --name base --override-channels -c defaults conda
+    conda install --yes --name base "${pybasepkgs[@]}"
+    conda create --yes --name geo "${pygeopkgs[@]}"
+
+    chown -R ubuntu:ubuntu /home/ubuntu/miniconda3
     popd
 }
 

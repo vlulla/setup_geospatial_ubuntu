@@ -71,23 +71,25 @@ install_docker() {
 
 ## Anaconda
 install_anaconda() {
-    local pygeopkgs=( geopandas dask fiona descartes stumpy hypothesis ipython pyarrow dask xarray zarr )
-    pushd "${HOME}"
-    mkdir -p Downloads && cd Downloads
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda-installer.sh
-    bash miniconda-installer.sh -b -p "${HOME}/miniconda3"
-    ## echo 'export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"' >> ~/.zshrc
-    ## export PATH="${HOME}/miniconda3/bin${PATH:+:${PATH}}"
-    "${HOME}"/miniconda3/bin/conda init zsh
-    conda config --add channels 'r'
-    conda config --add channels conda-forge
-    conda config --set channel_priority strict
-    conda config --set auto_update_conda False
-    conda config --set auto_activate_base False
-    conda config --set show_channel_urls True
-    conda update -y conda
-    conda create -y --name geo "${pygeopkgs[@]}"
-    popd
+  local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn )
+  local pygeopkgs=( geopandas fiona descartes )
+
+  pushd /home/ubuntu
+  mkdir -p Downloads && cd Downloads
+  wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda-installer.sh
+  bash ./miniconda-installer.sh -b -p /home/ubuntu/miniconda3
+
+  source /home/ubuntu/miniconda3/bin/activate && /home/ubuntu/miniconda3/bin/conda init zsh
+  conda config --add channels conda-forge
+  conda config --set channel_priority strict
+  conda config --set auto_update_conda False
+  conda config --set show_channel_urls True
+  conda update --yes --name base --override-channels -c defaults conda
+  conda install --yes --name base "${pybasepkgs[@]}"
+  conda create --yes --name geo "${pygeopkgs[@]}"
+
+  chown -R ubuntu:ubuntu /home/ubuntu/miniconda3
+  popd
 }
 
 ## Go
