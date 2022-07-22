@@ -69,26 +69,29 @@ install_docker() {
 ## Lookup R packages from code/R/packages_i_use.R or some such file to see
 ## how to install requisite R packages.
 
-## Anaconda
-install_anaconda() {
-  local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn )
-  local pygeopkgs=( geopandas fiona descartes ipython )
+## Mambaforge
+install_mambaforge() {
+  local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn distributed pytest pytest-xdist s3fs fsspec )
+  local pygeopkgs=( geopandas fiona descartes ipython pyproj s3fs fsspec )
+  local installdir="/home/ubuntu"
+  local url="https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh"
 
-  pushd /home/ubuntu
+  pushd "${installdir}"
   mkdir -p Downloads && cd Downloads
-  wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda-installer.sh
-  bash ./miniconda-installer.sh -b -p /home/ubuntu/miniconda3
+  [[ ! -f "${url##*/}" ]] && curl -SLO "${url}"
+  bash "./${url##*/}" -b -u -p ${installdir}/mambaforge
 
-  source /home/ubuntu/miniconda3/bin/activate && /home/ubuntu/miniconda3/bin/conda init zsh
-  conda config --add channels conda-forge
-  conda config --set channel_priority strict
-  conda config --set auto_update_conda False
-  conda config --set show_channel_urls True
-  conda update --yes --name base --override-channels -c defaults conda
-  conda install --yes --name base "${pybasepkgs[@]}"
-  conda create --yes --name geo "${pygeopkgs[@]}"
+  source ${installdir}/mambaforge/bin/activate && ${installdir}/mambaforge/bin/mamba init zsh
+  mamba config --add channels conda-forge
+  mamba config --set channel_priority strict
+  mamba config --set auto_update_conda False
+  mamba config --set show_channel_urls True
+  mamba install --yes --name base "${pybasepkgs[@]}"
+  mamba create --yes --name geo "${pygeopkgs[@]}"
+  mamba update --yes --name base --update-all
+  mamba update --yes --name geo --update-all
 
-  chown -R ubuntu:ubuntu /home/ubuntu/miniconda3
+  chown -R ubuntu:ubuntu ${installdir}/mambaforge
   popd
 }
 
@@ -179,7 +182,7 @@ EOF
 # install_QGIS
 # install_sbt
 # install_docker
-# install_anaconda
+# install_mambaforge
 # install_go
 # install_julia ${HOME}/VROOT
 # install_erlang
