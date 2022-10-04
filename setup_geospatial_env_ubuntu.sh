@@ -71,7 +71,7 @@ install_docker() {
 
 ## Mambaforge
 install_mambaforge() {
-  local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn distributed pytest pytest-xdist s3fs fsspec )
+  local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn distributed pytest pytest-xdist s3fs fsspec h5netcdf cftime bottleneck )
   local pygeopkgs=( geopandas fiona descartes ipython pyproj s3fs fsspec )
   local installdir="/home/ubuntu"
   local url="https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh"
