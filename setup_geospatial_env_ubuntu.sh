@@ -2,16 +2,21 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-sudo apt-get --yes && sudo apt-get install --yes --auto-remove --no-install-recommends \
-  build-essential apt-transport-https curl ca-certificates gdal-bin git gnupg graphviz wget keepassxc \
-  sqlite3 python3 p7zip-full htop postgresql libpq-dev nmap emacs tmux zsh zstd liblz4-tool \
-  bwidget default-jdk fonts-roboto ghostscript jq libjq-dev libbz2-dev libicu-dev liblzma-dev \
-  libhunspell-dev libmagick++-dev librdf0-dev libnode-dev qpdf texinfo ssh less vim lbzip2 \
-  libfftw3-dev libgdal-dev libgeos-dev libgsl-dev libgl1-mesa-dev libglu1-mesa-dev libhdf4-alt-dev libhdf5-dev \
-  libproj-dev libnetcdf-dev libsqlite3-dev libssh2-1-dev libssl-dev libudunits2-dev libxt-dev netcdf-bin \
-  protobuf-compiler texlive texlive-latex-extra texlive-fonts-recommended texlive-humanities tk-dev unixodbc-dev \
-  libxml2-dev
+## base ubuntu packages
+install_ubuntu_base() {
+  local pkgs
+  pkgs=( apt-transport-https curl ca-certificates gdal-bin git gnupg graphviz wget keepassxc sqlite3 python3 p7zip-full
+         htop postgresql libpq-dev nmap emacs tmux zsh zstd liblz4-tool bwidget default-jdk fonts-roboto ghostscript jq
+         libjq-dev libbz2-dev libicu-dev liblzma-dev libhunspell-dev libmagick++-dev librdf0-dev libnode-dev qpdf texinfo
+         ssh less vim lbzip2 libfftw3-dev libgdal-dev libgeos-dev libgsl-dev libgl1-mesa-dev libglu1-mesa-dev libhdf4-alt-dev
+         libhdf5-dev libproj-dev libnetcdf-dev libsqlite3-dev libssh2-1-dev libssl-dev libudunits2-dev libxt-dev netcdf-bin
+         protobuf-compiler texlive texlive-latex-extra texlive-fonts-recommended texlive-humanities tk-dev unixodbc-dev
+         libxml2-dev
+  )
 
+  sudo apt-get update --yes
+  sudo apt-get install --yes --auto-remove --no-install-recommends build-essential "${pkgs[@]}"
+}
 
 ## R
 install_R() {
@@ -98,7 +103,7 @@ install_mambaforge() {
 ## Go
 install_go() {
     pushd "${HOME}"
-    local VERSION="1.18.3"
+    local VERSION="1.19.3"
     local OS="linux"
     local ARCH="amd64"
     [ -d "/usr/local/go" ] && sudo rm -rf /usr/local/go
@@ -125,9 +130,9 @@ install_julia() {
       fi
     fi
     pushd "${installdir}"
-    local version="1.7.3"
+    local version="1.8.2"
     local juliagz="julia-${version}-linux-x86_64.tar.gz"
-    [ ! -f "${juliagz}" ] && curl -L -O "https://julialang-s3.julialang.org/bin/linux/x64/1.6/${juliagz}"
+    [ ! -f "${juliagz}" ] && curl -L -O "https://julialang-s3.julialang.org/bin/linux/x64/${version%.*}/${juliagz}"
     tar xf "${juliagz}"
     export PATH="$(pwd)/julia-${version}/bin${PATH:+:${PATH}}"
     rm -rf "${juliagz}"
@@ -176,6 +181,7 @@ EOF
 }
 
 ## Uncomment lines you want to install!
+# install_ubuntu_base
 # install_R
 # install_go
 # install_J
