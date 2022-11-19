@@ -2,10 +2,21 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-## http://redsymbol.net/articles/unofficial-bash-strict-mode/ 
-## explains why we need above lines
+install_ubuntu_base() {
+  local pkgs
+  pkgs=( apt-transport-https curl ca-certificates gdal-bin git gnupg graphviz wget
+    sqlite3 python3 p7zip-full htop tmux tree zsh zstd unzip liblz4-tool default-jdk jq
+    libjq-dev libbz2-dev libicu-dev liblzma-dev ssh less vim libfftw3-dev
+    libgdal-dev libgeos-dev libgsl-dev libhdf4-alt-dev libhdf5-dev libproj-dev
+    libnetcdf-dev libsqlite3-dev libssh2-1-dev libssl-dev libudunits2-dev libxt-dev
+    netcdf-bin protobuf-compiler libxml2-dev
+  )
+  apt-get update --yes
+  apt-get install --yes --auto-remove --no-install-recommends build-essential "${pkgs[@]}"
+}
 
 install_R() {
+    HOME="${1:-/home/ubuntu}"
     apt-get update --yes -qq && apt-get install --yes -qq --no-install-recommends software-properties-common dirmngr
     wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
     [[ ! -f "/etc/apt/sources.list.d/R.list" ]] && echo "deb [signed-by=/etc/apt/trusted.gpg.d/cran_ubuntu_key.asc] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" > /etc/apt/sources.list.d/R.list
@@ -24,8 +35,8 @@ install_R() {
     sudo R --quiet --vanilla --no-save --no-restore -e "options(repos='https://cloud.r-project.org/',Ncpus=$(nproc));install.packages(setdiff(c('docopt','BiocManager'), installed.packages()[,'Package']),dependencies=TRUE)"
     sudo "$(which installBioc.r)" graph EBImage
     sudo "$(which install2.r)" --deps TRUE --error --ncpus "$(nproc)" --skipinstalled RSQLite ggplot2 igraph rbenchmark data.table simstudy fst e1071 sf rgdal sp raster lidR RPostgres caret randomForest xgboost vtreat drat stringi
-    if ! grep -sF "http://cloudyr.github.io/drat" ${HOME}/.Rprofile; then
-      echo 'drat::addRepo("cloudyr", "http://cloudyr.github.io/drat")' | tee -a ${HOME}/.Rprofile
+    if ! grep -sF "http://cloudyr.github.io/drat" "${HOME}/.Rprofile"; then
+      echo 'drat::addRepo("cloudyr", "http://cloudyr.github.io/drat")' | tee -a "${HOME}/.Rprofile"
     fi
     sudo R --quiet --no-save --no-restore -e "options(repos=c(CRAN='https://cloud.r-project.org/',cloudyr='http://cloudyr.github.io/drat'),Ncpus=$(nproc)); install.packages(setdiff(c('awspack'),installed.packages()[,'Package']),dependencies=TRUE)"
 }
@@ -53,7 +64,7 @@ install_R() {
 ##     sudo R CMD javareconf
 ## }
 ##
-## 
+##
 ## ## To tunnel this you'll have to call it like this:
 ## ## ssh -i AWSKEY.pem -L 8787:127.0.0.1:8787 ruser@AWSADDRESS
 
@@ -63,12 +74,13 @@ install_mambaforge() {
     local installdir="/home/ubuntu"
     local url="https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh"
 
-    pushd "${installdir}"
-    mkdir -p Downloads && cd Downloads
-    [[ ! -f "${url##*/}" ]] && curl -SLO "${url}"
-    bash "./{url##*/}" -b -u -p "${installdir}/mambaforge"
+    mkdir -p "${installdir}/Downloads"
+    pushd "${installdir}/Downloads"
 
-    source ${installdir}/mambaforge/bin/activate && ${installdir}/mambaforge/bin/mamba init zsh
+    [[ ! -f "${url##*/}" ]] && curl -SLO "${url}"
+    bash "./${url##*/}" -b -u -p "${installdir}/mambaforge"
+
+    source ${installdir}/mambaforge/bin/activate
     mamba config --add channels conda-forge
     mamba config --set channel_priority strict
     mamba config --set auto_update_conda False
@@ -77,11 +89,46 @@ install_mambaforge() {
     mamba create --yes --name geo "${pygeopkgs[@]}"
     mamba update --yes --name base --update-all
     mamba update --yes --name geo --update-all
-
-    chown -R ubuntu:ubuntu ${installdir}/mambaforge
     popd
 }
 
-install_R
+my_config() {
+  local user
+  user="${1:-ubuntu}"
+  userdir="/home/${user}"
+  mkdir -p "${userdir}/code"
+  pushd "${userdir}/code"
+  git clone https://github.com/vlulla/config
+  git clone https://github.com/vlulla/vim_templates
+  curl -o awscliv2.zip -sL "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" && unzip awscliv2.zip && ./aws/install
+  mkdir -p "${userdir}/.aws"
+  cat > "${userdir}/.aws/config" <<'EOF'
+[default]
+region=us-east-1
+output=json
+EOF
+  chmod -R og-rwx "${userdir}/.aws"
+  popd
+
+  cat <<'EOF' > "${userdir}/.zshrc"
+[[ -f "${HOME}/code/config/zshrc" ]] && source "${HOME}/code/config/zshrc"
+EOF
+
+  cat <<EOF > "${userdir}/.vimrc"
+source "${userdir}/code/config/vimrc"
+EOF
+  ln -s "${userdir}/code/config/tmux.conf" "${userdir}/.tmux.conf"
+  sed -i'' -e '/^ubuntu:/s-/bin/bash-/usr/bin/zsh-g' /etc/passwd
+}
+
+fix_permissions() {
+  user="${1:-ubuntu}"
+  chown -R "${user}:${user}" "/home/${user}"
+}
+
+install_ubuntu_base
+## install_R
 ## install_RStudio
 install_mambaforge
+my_config
+fix_permissions

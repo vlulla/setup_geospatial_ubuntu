@@ -8,7 +8,7 @@ install_ubuntu_base() {
   pkgs=( apt-transport-https curl ca-certificates gdal-bin git gnupg graphviz wget keepassxc sqlite3 python3 p7zip-full
          htop postgresql libpq-dev nmap emacs tmux zsh zstd liblz4-tool bwidget default-jdk fonts-roboto ghostscript jq
          libjq-dev libbz2-dev libicu-dev liblzma-dev libhunspell-dev libmagick++-dev librdf0-dev libnode-dev qpdf texinfo
-         ssh less vim lbzip2 libfftw3-dev libgdal-dev libgeos-dev libgsl-dev libgl1-mesa-dev libglu1-mesa-dev libhdf4-alt-dev
+         ssh less vim libfftw3-dev libgdal-dev libgeos-dev libgsl-dev libgl1-mesa-dev libglu1-mesa-dev libhdf4-alt-dev
          libhdf5-dev libproj-dev libnetcdf-dev libsqlite3-dev libssh2-1-dev libssl-dev libudunits2-dev libxt-dev netcdf-bin
          protobuf-compiler texlive texlive-latex-extra texlive-fonts-recommended texlive-humanities tk-dev unixodbc-dev
          libxml2-dev
