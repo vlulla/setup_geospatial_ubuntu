@@ -121,6 +121,15 @@ EOF
   sed -i'' -e '/^ubuntu:/s-/bin/bash-/usr/bin/zsh-g' /etc/passwd
 }
 
+install_osquery() {
+  local key
+  key=1484120AC4E9F8A1A577AEEE97A80C63C9D8B80B
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ${key}
+  echo "deb [arch=amd64] https://pkg.osquery.io/deb deb main" > /etc/apt/sources.list.d/osquery.list
+  apt-get update
+  apt-get install osquery
+}
+
 fix_permissions() {
   user="${1:-ubuntu}"
   chown -R "${user}:${user}" "/home/${user}"
@@ -130,5 +139,6 @@ install_ubuntu_base
 ## install_R
 ## install_RStudio
 install_mambaforge
+install_osquery
 my_config
 fix_permissions
