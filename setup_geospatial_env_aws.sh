@@ -93,7 +93,7 @@ install_mambaforge() {
 }
 
 my_config() {
-  local user
+  local user userdir
   user="${1:-ubuntu}"
   userdir="/home/${user}"
   mkdir -p "${userdir}/code"
@@ -130,7 +130,7 @@ install_osquery() {
   apt-get install osquery
 }
 
-fix_permissions() {
+fix_ownership() {
   user="${1:-ubuntu}"
   chown -R "${user}:${user}" "/home/${user}"
 }
@@ -141,4 +141,4 @@ install_ubuntu_base
 install_mambaforge
 install_osquery
 my_config
-fix_permissions
+fix_ownership

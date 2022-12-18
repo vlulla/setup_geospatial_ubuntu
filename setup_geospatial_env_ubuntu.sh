@@ -71,9 +71,6 @@ install_docker() {
     sudo apt-get --yes update && sudo apt-get install --yes docker-ce docker-ce-cli containerd.io docker-compose-plugin
 }
 
-## Lookup R packages from code/R/packages_i_use.R or some such file to see
-## how to install requisite R packages.
-
 ## Mambaforge
 install_mambaforge() {
   local pybasepkgs=( dask ipython hypothesis xarray zarr pyarrow matplotlib scikit-learn distributed pytest pytest-xdist s3fs fsspec h5netcdf cftime bottleneck )
@@ -169,9 +166,9 @@ install_spark() {
   echo "Running in $(pwd)"
   sudo apt-get update && sudo apt-get install --yes default-jdk scala curl
   ## apt-get update && apt-get install --yes default-jdk scala curl
-  curl -sSL -O https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
-  sudo tar -C /opt -xvf spark-3.2.1-bin-hadoop3.2.tgz
-  cd /opt && sudo mv spark-3.2.1-bin-hadoop3.2 spark
+  curl -sSL -O https://dlcdn.apache.org/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz
+  sudo tar -C /opt -xvf spark-3.3.1-bin-hadoop3.tgz
+  cd /opt && sudo mv spark-3.3.1-bin-hadoop3 spark
   cat <<'EOF' >> ~/.profile
 export SPARK_HOME=/opt/spark
 export PATH="${PATH:+${PATH}:}${SPARK_HOME}/bin:${SPARK_HOME}/sbin"
