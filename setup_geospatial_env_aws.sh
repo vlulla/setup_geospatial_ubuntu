@@ -2,6 +2,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+tmpdir=$(mktemp -d /tmp/tmp.VL.$(date +"%Y%m%d").XXXXXXXX)
+cleanup() {
+  rm -rf "${tmpdir}"
+}
+trap cleanup EXIT QUIT INT
+
 install_ubuntu_base() {
   local pkgs
   pkgs=( apt-transport-https curl ca-certificates gdal-bin git gnupg graphviz wget
@@ -130,6 +136,18 @@ install_osquery() {
   apt-get install osquery
 }
 
+install_duckdb() {
+  local url version instdir
+  version="v0.6.1"
+  url="https://github.com/duckdb/duckdb/releases/download/${version}/duckdb_cli-linux-amd64.zip"
+  instdir="${1:-${HOME}/.local/bin}"
+
+  pushd "${tmpdir}"
+  curl -SL -O "${url}"
+  mkdir -p "${instdir}" && unzip ${url##*/} -d "${instdir}"
+  popd
+}
+
 fix_ownership() {
   user="${1:-ubuntu}"
   chown -R "${user}:${user}" "/home/${user}"
@@ -140,5 +158,8 @@ install_ubuntu_base
 ## install_RStudio
 install_mambaforge
 install_osquery
+install_duckdb
 my_config
 fix_ownership
+
+exit 0
