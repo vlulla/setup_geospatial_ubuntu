@@ -177,6 +177,20 @@ EOF
   popd
 }
 
+install_duckdb() {
+  local url version instdir
+  version="v0.7.0"
+  url="https://github.com/duckdb/duckdb/releases/download/${version}/duckdb_cli-linux-amd64.zip"
+  instdir="${1:-${HOME}/.local/bin}"
+
+  trap 'rm -rf "${tmpdir}"' EXIT
+  tmpdir=$(mktemp -d -t duckdb.XXXXXXXX)
+  pushd "${tmpdir}"
+  curl -SL -O "${url}"
+  mkdir -p "${instdir}" && unzip ${url##*/} -d "${instdir}"
+  popd
+}
+
 ## Uncomment lines you want to install!
 # install_ubuntu_base
 # install_R
@@ -192,3 +206,4 @@ EOF
 # install_elixir
 # install_manpages
 # install_spark
+# install_duckdb
