@@ -138,7 +138,7 @@ install_osquery() {
 
 install_duckdb() {
   local url version instdir
-  version="v0.7.0"
+  version="v0.8.1"
   url="https://github.com/duckdb/duckdb/releases/download/${version}/duckdb_cli-linux-amd64.zip"
   instdir="${1:-${HOME}/.local/bin}"
 
