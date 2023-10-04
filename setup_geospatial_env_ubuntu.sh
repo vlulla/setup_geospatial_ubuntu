@@ -11,7 +11,7 @@ install_ubuntu_base() {
          ssh less vim libfftw3-dev libgdal-dev libgeos-dev libgsl-dev libgl1-mesa-dev libglu1-mesa-dev libhdf4-alt-dev
          libhdf5-dev libproj-dev libnetcdf-dev libsqlite3-dev libssh2-1-dev libssl-dev libudunits2-dev libxt-dev netcdf-bin
          protobuf-compiler texlive texlive-latex-extra texlive-fonts-recommended texlive-humanities tk-dev unixodbc-dev
-         libxml2-dev
+         libxml2-dev ripgrep zstd
   )
 
   sudo apt-get update --yes
@@ -100,7 +100,7 @@ install_mambaforge() {
 ## Go
 install_go() {
     pushd "${HOME}"
-    local VERSION="1.19.3"
+    local VERSION="1.21.1"
     local OS="linux"
     local ARCH="amd64"
     [ -d "/usr/local/go" ] && sudo rm -rf /usr/local/go
@@ -127,7 +127,7 @@ install_julia() {
       fi
     fi
     pushd "${installdir}"
-    local version="1.8.2"
+    local version="1.9.3"
     local juliagz="julia-${version}-linux-x86_64.tar.gz"
     [ ! -f "${juliagz}" ] && curl -L -O "https://julialang-s3.julialang.org/bin/linux/x64/${version%.*}/${juliagz}"
     tar xf "${juliagz}"
@@ -179,7 +179,7 @@ EOF
 
 install_duckdb() {
   local url version instdir
-  version="v0.8.1"
+  version="v0.9.0"
   url="https://github.com/duckdb/duckdb/releases/download/${version}/duckdb_cli-linux-amd64.zip"
   instdir="${1:-${HOME}/.local/bin}"
 

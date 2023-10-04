@@ -15,7 +15,7 @@ install_ubuntu_base() {
     libjq-dev libbz2-dev libicu-dev liblzma-dev ssh less vim libfftw3-dev
     libgdal-dev libgeos-dev libgsl-dev libhdf4-alt-dev libhdf5-dev libproj-dev
     libnetcdf-dev libsqlite3-dev libssh2-1-dev libssl-dev libudunits2-dev libxt-dev
-    netcdf-bin protobuf-compiler libxml2-dev
+    netcdf-bin protobuf-compiler libxml2-dev ripgrep zstd
   )
   apt-get update --yes
   apt-get install --yes --auto-remove --no-install-recommends build-essential "${pkgs[@]}"
@@ -138,7 +138,7 @@ install_osquery() {
 
 install_duckdb() {
   local url version instdir
-  version="v0.8.1"
+  version="v0.9.0"
   url="https://github.com/duckdb/duckdb/releases/download/${version}/duckdb_cli-linux-amd64.zip"
   instdir="${1:-${HOME}/.local/bin}"
 
